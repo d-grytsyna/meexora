@@ -4,8 +4,6 @@ import SwiftUI
 struct meexoraApp: App {
     @StateObject var authManager = AuthManager()
 
-    
-    
     var body: some Scene {
         WindowGroup {
             if authManager.isLoggedIn {
@@ -16,7 +14,4 @@ struct meexoraApp: App {
             }
         }
     }
- 
-    
-
 }
