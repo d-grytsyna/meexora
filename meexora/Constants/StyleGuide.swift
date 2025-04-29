@@ -44,6 +44,7 @@ struct StyleGuide {
     }
     
     // MARK: - Gradients
+    // test gavno
     struct Gradients {
         static let background = LinearGradient(
             gradient: Gradient(colors: [Colors.accentGradientStart, Colors.accentGradientEnd]),
