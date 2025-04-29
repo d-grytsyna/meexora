@@ -52,6 +52,14 @@ struct StyleGuide {
             endPoint: .bottomTrailing
         )
     }
+    // test gavno
+    struct Gradients2 {
+        static let background = LinearGradient(
+            gradient: Gradient(colors: [Colors.accentGradientStart, Colors.accentGradientEnd]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
     
     // MARK: - Button Styles
     struct Buttons {
