@@ -16,7 +16,6 @@ final class RegistrationViewModel: ObservableObject {
         case .enterEmail: return "Next"
         case .selectRole: return "Next"
         case .enterVerificationCode: return "Confirm"
-        case .completed: return ""
         }
     }
     
@@ -34,9 +33,8 @@ final class RegistrationViewModel: ObservableObject {
         
         do {
             try await AuthService.requestRegistration(email: email)
-            DispatchQueue.main.async {
-                self.currentStep = .selectRole
-            }
+            self.currentStep = .selectRole
+            
         } catch {
             self.error = "Failed to request registration: \(error.localizedDescription)"
         }
@@ -77,5 +75,4 @@ enum RegistrationStep {
     case enterEmail
     case selectRole
     case enterVerificationCode
-    case completed
 }
