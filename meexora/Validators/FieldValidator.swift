@@ -56,4 +56,13 @@ struct FieldValidator {
         return .success
     }
     
+    static func validateVerificationCode(_ code: String) -> ValidationResult {
+          let trimmedCode = code.trimmingCharacters(in: .whitespacesAndNewlines)
+
+          if trimmedCode.isEmpty {
+              return .failure(["Verification code cannot be empty."])
+          }
+
+          return .success
+      }
 }

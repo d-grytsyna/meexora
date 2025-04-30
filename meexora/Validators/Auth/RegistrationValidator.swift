@@ -1,11 +1,13 @@
-struct ResetPasswordValidator {
+import Foundation
 
-    static func validate(code: String, password: String) -> ValidationResult {
+struct RegistrationValidator {
+
+    static func validate(email: String, password: String) -> ValidationResult {
         var errors: [String] = []
 
-        switch FieldValidator.validateVerificationCode(code) {
-        case .failure(let codeErrors):
-            errors.append(contentsOf: codeErrors)
+        switch FieldValidator.validateEmail(email) {
+        case .failure(let emailErrors):
+            errors.append(contentsOf: emailErrors)
         case .success:
             break
         }

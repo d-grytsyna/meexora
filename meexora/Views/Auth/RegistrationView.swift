@@ -8,7 +8,7 @@ struct RegistrationView: View {
         ZStack {
             StyleGuide.Colors.primaryBackground.ignoresSafeArea()
 
-            VStack(spacing: StyleGuide.Spacing.large) {
+            VStack(spacing: StyleGuide.Spacing.medium) {
                 Text("Create your account")
                     .font(StyleGuide.Fonts.title)
                     .foregroundColor(StyleGuide.Colors.primaryText)
@@ -24,7 +24,7 @@ struct RegistrationView: View {
                 }
                 .padding(.horizontal)
 
-                if viewModel.currentStep != .completed && viewModel.currentStep != .selectRole{
+                if  viewModel.currentStep != .selectRole{
                     Button(action: {
                         Task { await handleNextAction() }
                     }) {
@@ -58,10 +58,6 @@ struct RegistrationView: View {
             RegistrationSelectRoleView(viewModel: viewModel)
         case .enterVerificationCode:
             RegistrationEnterVerificationCodeView(viewModel: viewModel)
-        case .completed:
-            Text("Registration Completed Successfully!")
-                .font(StyleGuide.Fonts.title)
-                .foregroundColor(StyleGuide.Colors.whiteText)
         }
     }
 
@@ -71,7 +67,7 @@ struct RegistrationView: View {
             await viewModel.submitEmail()
         case .enterVerificationCode:
             await viewModel.submitVerification(authManager: authManager)
-        case .completed, .selectRole:
+        case .selectRole:
             break
         }
     }

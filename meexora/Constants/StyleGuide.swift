@@ -44,7 +44,7 @@ struct StyleGuide {
     }
     
     // MARK: - Gradients
-    struct Gradients2 {
+    struct Gradients {
         static let background = LinearGradient(
             gradient: Gradient(colors: [Colors.accentGradientStart, Colors.accentGradientEnd]),
             startPoint: .topLeading,

@@ -9,8 +9,34 @@ final class RegistrationViewModel: ObservableObject {
     
     @Published var currentStep: RegistrationStep = .enterEmail
     @Published var isLoading: Bool = false
-    @Published var error: String?
+    @Published var isLoadingReset: Bool = false
     
+    @Published var error: String?
+    @Published var resendAvailableIn: Int = 60
+    @Published var isResendAvailable: Bool = false
+
+    private var timer: Timer?
+
+    func startResendTimer() {
+        resendAvailableIn = 60
+        isResendAvailable = false
+
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+
+            Task { @MainActor in
+                if self.resendAvailableIn > 0 {
+                    self.resendAvailableIn -= 1
+                } else {
+                    self.isResendAvailable = true
+                    self.timer?.invalidate()
+                }
+            }
+        }
+    }
+
+
     var buttonTitle: String {
         switch currentStep {
         case .enterEmail: return "Next"
@@ -33,6 +59,7 @@ final class RegistrationViewModel: ObservableObject {
         
         do {
             try await AuthService.requestRegistration(email: email)
+            self.startResendTimer()
             self.currentStep = .selectRole
             
         } catch {
@@ -40,6 +67,20 @@ final class RegistrationViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func resendCode() async{
+        error = nil
+        isLoadingReset = true
+        do {
+            try await AuthService.requestRegistration(email: email)
+            self.startResendTimer()
+            
+        } catch {
+            self.error = "Failed to request code: \(error.localizedDescription)"
+        }
+        isLoadingReset = false
+
     }
     
     func selectRole(_ selectedRole: String) {
@@ -50,6 +91,14 @@ final class RegistrationViewModel: ObservableObject {
     func submitVerification(authManager: AuthManager) async {
         isLoading = true
         error = nil
+        
+        let validationResult = VerificationValidator.validate(code: verificationCode)
+        
+        if validationResult.isFailure {
+            self.error = validationResult.errorMessages.first
+            self.isLoading = false
+            return
+        }
         
         do {
             let response = try await AuthService.confirmRegistration(

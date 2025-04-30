@@ -1,3 +1,3 @@
-struct RegistrationRequest: Encodable {
+struct AccountModificationRequest: Encodable {
     let email: String
 }
