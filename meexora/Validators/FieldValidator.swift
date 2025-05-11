@@ -65,4 +65,73 @@ struct FieldValidator {
 
           return .success
       }
+    
+    
+    static func validateFirstName(_ name: String) -> ValidationResult {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if trimmed.isEmpty {
+            return .failure(["First name is required"])
+        }
+
+        if trimmed.count > 64 {
+            return .failure(["First name must be at most 64 characters"])
+        }
+
+        return .success
+    }
+    
+    
+    static func validateLastName(_ name: String) -> ValidationResult {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if trimmed.isEmpty {
+            return .failure(["Last name is required"])
+        }
+
+        if trimmed.count > 64 {
+            return .failure(["Last name must be at most 64 characters"])
+        }
+
+        return .success
+    }
+    
+    static func validateLocation(_ location: String) -> ValidationResult {
+        let trimmed = location.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if trimmed.isEmpty {
+            return .failure(["Location is required"])
+        }
+
+        if trimmed.count > 128 {
+            return .failure(["Location must be at most 128 characters"])
+        }
+
+        return .success
+    }
+
+
+    static func validateBirthdate(_ date: Date?) -> ValidationResult {
+        guard let date = date else {
+            return .success
+        }
+
+        let today = Date()
+        if date > today {
+            return .failure(["Birthdate cannot be in the future"])
+        }
+
+        let calendar = Calendar.current
+        let ageComponents = calendar.dateComponents([.year], from: date, to: today)
+        if let age = ageComponents.year, age < 13 {
+            return .failure(["You must be at least 13 years old"])
+        }
+
+        return .success
+    }
+
+    
+    
+
+
 }

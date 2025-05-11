@@ -21,11 +21,7 @@ final class LoginViewModel: ObservableObject {
         
         do {
             let response = try await AuthService.login(email: email, password: password)
-            
-            TokenStorage.saveAccessToken(response.accessToken)
-            TokenStorage.saveRefreshToken(response.refreshToken)
-            
-            authManager.loginSuccess()
+            authManager.loginSuccess(accessToken: response.accessToken, refreshToken: response.refreshToken)
         } catch {
             self.error = "Login failed: \(error.localizedDescription)"
         }

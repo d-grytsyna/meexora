@@ -2,7 +2,6 @@ import SwiftUI
 
 struct RegistrationEnterVerificationCodeView: View {
     @ObservedObject var viewModel: RegistrationViewModel
-    @EnvironmentObject var authManager: AuthManager
     
     var body: some View {
         VStack(spacing: StyleGuide.Spacing.medium) {

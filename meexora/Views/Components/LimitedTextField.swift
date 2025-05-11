@@ -9,7 +9,6 @@ struct LimitedTextField: View {
 
     var body: some View {
         ZStack(alignment: .center) {
-            // Кастомний плейсхолдер
             if text.isEmpty {
                 HStack(spacing: 4) {
                     ForEach(0..<limit, id: \.self) { _ in

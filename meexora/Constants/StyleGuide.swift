@@ -63,6 +63,14 @@ struct StyleGuide {
         }
     }
     
+    // MARK: - Progress Button Styles
+    struct ProgressButtons {
+        static func primary() -> some ViewModifier {
+            ProgressPrimaryButton()
+        }
+
+    }
+    
     
     
     // MARK: - Spacing

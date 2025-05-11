@@ -100,10 +100,9 @@ final class ForgotPasswordViewModel: ObservableObject {
                 code: verificationCode
             )
             
-            TokenStorage.saveAccessToken(response.accessToken)
-            TokenStorage.saveRefreshToken(response.refreshToken)
+
             
-            authManager.loginSuccess()
+            authManager.loginSuccess(accessToken: response.accessToken, refreshToken: response.refreshToken)
         } catch {
             self.error = "Failed to confirm password reset: \(error.localizedDescription)"
         }
