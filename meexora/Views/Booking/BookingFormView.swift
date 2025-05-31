@@ -51,34 +51,47 @@ struct BookingFormView: View {
     }
 
     private var eventInfoSection: some View {
-        VStack(alignment: .leading, spacing: StyleGuide.Spacing.small) {
-            Text(event.title)
-                .font(StyleGuide.Fonts.title)
-                .foregroundColor(StyleGuide.Colors.primaryText)
+        VStack(alignment: .leading, spacing: StyleGuide.Spacing.medium) {
+            HStack(spacing: 8) {
+                Image(event.category.iconNameSmall)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
 
-            Text(event.description)
-                .font(StyleGuide.Fonts.body)
-                .foregroundColor(StyleGuide.Colors.secondaryText)
+                Text(event.title)
+                    .font(StyleGuide.Fonts.title)
+                    .foregroundColor(StyleGuide.Colors.primaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxWidth: .infinity)
+
+            HStack(spacing: StyleGuide.Spacing.small) {
+                Image(systemName: "ticket")
+                    .foregroundColor(StyleGuide.Colors.accentBlue)
+                Text("Ticket price \(event.price.formatted()) €")
+                    .font(StyleGuide.Fonts.bodyBold)
+                    .bold()
+                    .foregroundColor(StyleGuide.Colors.accentBlue)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: StyleGuide.Spacing.small) {
                 Image(systemName: "calendar")
+                    .foregroundColor(StyleGuide.Colors.accentPurple)
                 Text(event.date.formatted(date: .long, time: .shortened))
             }
-            .font(StyleGuide.Fonts.small)
-            .foregroundColor(StyleGuide.Colors.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: StyleGuide.Spacing.small) {
                 Image(systemName: "mappin.and.ellipse")
+                    .foregroundColor(StyleGuide.Colors.accentPurple)
                 Text(event.address)
             }
-            .font(StyleGuide.Fonts.small)
-            .foregroundColor(StyleGuide.Colors.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(StyleGuide.Padding.medium)
-        .frame(maxWidth: .infinity)
+        .padding()
         .background(StyleGuide.Colors.secondaryBackground)
         .cornerRadius(StyleGuide.Corners.medium)
-        .padding(.horizontal)
     }
 
     private var ticketInputSection: some View {
@@ -141,6 +154,8 @@ struct BookingFormView: View {
                 case .monitoringReserved:
                     alertMessage = "Tickets became available and your booking has been created."
                     showAlert = true
+                    navigateToNextStep = true
+                    
                 case .monitoringCreated:
                     alertMessage = "Tickets are not available at the moment. Monitoring has been created."
                     showAlert = true
@@ -175,7 +190,9 @@ struct BookingFormView: View {
             date: Date(),
             latitude: 50.4501,
             longitude: 30.5234,
-            address: "Maidan Nezalezhnosti, Kyiv, Ukraine"
+            address: "Maidan Nezalezhnosti, Kyiv, Ukraine",
+            category: .general,
+            price: 39
         ), isMonitoringMode: true
     )
 }

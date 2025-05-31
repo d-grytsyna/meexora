@@ -100,4 +100,13 @@ struct StyleGuide {
         static let y: CGFloat = 2
         
     }
+
+}
+extension View {
+    func standardPagePadding() -> some View {
+        self
+            .padding(.horizontal, StyleGuide.Padding.large)
+            .padding(.top, StyleGuide.Padding.large)
+            .padding(.bottom, StyleGuide.Padding.extraLarge)
+    }
 }

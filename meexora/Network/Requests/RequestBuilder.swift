@@ -7,7 +7,8 @@ struct RequestBuilder {
         method: String = "GET",
         body: Encodable? = nil,
         queryItems: [URLQueryItem]? = nil,
-        headers: [String: String] = ["Content-Type": "application/json"]
+        headers: [String: String] = ["Content-Type": "application/json"],
+        encoder: JSONEncoder = JSONEncoder()
     ) throws -> URLRequest {
         
         var components = URLComponents(string: "\(Constants.apiBaseURL)\(path)")
@@ -25,7 +26,7 @@ struct RequestBuilder {
         }
 
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(AnyEncodable(body))
+            request.httpBody = try encoder.encode(AnyEncodable(body))
         }
 
         return request

@@ -1,7 +1,7 @@
 import Foundation
 
 
-struct BookingResponse: Decodable {
+struct BookingResponse: Decodable{
     let id: UUID
     let eventId: UUID
     let eventTitle: String

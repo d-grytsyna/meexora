@@ -57,7 +57,7 @@ struct BookingPaymentView: View {
                         Button("Pay Now") {
                             presentPaymentSheet(clientSecret: clientSecret)
                         }
-                        .modifier(StyleGuide.Buttons.primary())
+                        .modifier(StyleGuide.Buttons.accent())
                     } else {
                         VStack(alignment: .leading, spacing: StyleGuide.Spacing.medium) {
                             Text("Payment has not been initialized.")
@@ -130,17 +130,18 @@ struct BookingPaymentView: View {
 
             HStack(spacing: StyleGuide.Spacing.small) {
                 Image(systemName: "calendar")
+                    .foregroundColor(StyleGuide.Colors.accentPurple)
                 Text(booking.eventDateTime.formatted(date: .long, time: .shortened))
             }
-            .font(StyleGuide.Fonts.small)
-            .foregroundColor(StyleGuide.Colors.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: StyleGuide.Spacing.small) {
                 Image(systemName: "mappin.and.ellipse")
+                    .foregroundColor(StyleGuide.Colors.accentPurple)
                 Text(booking.eventLocation)
             }
-            .font(StyleGuide.Fonts.small)
-            .foregroundColor(StyleGuide.Colors.secondaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -163,6 +164,15 @@ struct BookingPaymentView: View {
                     Text(ticket.status)
                         .font(StyleGuide.Fonts.small)
                         .foregroundColor(.gray)
+                    Spacer()
+                    let pricePerTicket: Decimal? = booking.tickets.count > 0
+                        ? booking.totalPrice / Decimal(booking.tickets.count)
+                        : nil
+
+                    Text(pricePerTicket?.formatted(.currency(code: "EUR")) ?? "-")
+                        .font(StyleGuide.Fonts.small)
+                        .foregroundColor(.gray)
+
                 }
             }
 
@@ -172,7 +182,7 @@ struct BookingPaymentView: View {
                 Text("Total:")
                     .font(StyleGuide.Fonts.bodyBold)
                 Spacer()
-                Text("\(booking.totalPrice.formatted(.currency(code: "USD")))")
+                Text("\(booking.totalPrice.formatted(.currency(code: "EUR")))")
                     .font(StyleGuide.Fonts.bodyBold)
             }
         }

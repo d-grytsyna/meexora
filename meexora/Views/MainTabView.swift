@@ -9,18 +9,14 @@ struct MainTabView: View {
                                 Image(systemName: "calendar")
                                 Text("Events")
                             }
+        
             
-            ProfileView()
+            BookingListView()
                 .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
+                    Image(systemName: "ticket")
+                    Text("Bookings")
                 }
             
-            Text("Settings")
-                .tabItem {
-                    Image(systemName: "gear")
-                    Text("Settings")
-                }
             if authManager.userRole == "ORGANIZER" {
                 ManagementView()
                         .tabItem {
@@ -28,6 +24,11 @@ struct MainTabView: View {
                             Text("Management")
                         }
             }
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("Profile")
+                }
         }
     }
 }

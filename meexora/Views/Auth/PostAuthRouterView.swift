@@ -4,6 +4,8 @@ struct PostAuthRouterView: View {
     @State private var isLoading = true
     @State private var hasProfile = false
     @State private var error: String?
+    @AppStorage("userCity") private var cachedCity: String = ""
+    
 
     var body: some View {
         content
@@ -15,7 +17,7 @@ struct PostAuthRouterView: View {
     @ViewBuilder
     private var content: some View {
         if isLoading {
-            ProgressView("Loading profile...")
+            ProgressView("Loading...")
         } else if let error = error {
             VStack(spacing: 16) {
                 Text("Error: \(error)")
@@ -36,7 +38,8 @@ struct PostAuthRouterView: View {
 
     private func loadProfile() async {
         do {
-            _ = try await UserService.getProfile()
+            let profile = try await UserService.getProfile()
+            cachedCity = profile.location
             hasProfile = true
         } catch {
             let nsError = error as NSError

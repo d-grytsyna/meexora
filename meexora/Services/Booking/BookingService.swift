@@ -36,5 +36,22 @@ struct BookingService {
         )
         return try await APIClient.shared.send(request, responseType: Bool.self)
     }
+    
+    static func fetchAllBookings() async throws -> [BookingResponse] {
+        let request = try RequestBuilder.buildRequest(
+            path: "/bookings",
+            method: "GET"
+        )
+        return try await APIClient.shared.send(request, responseType: [BookingResponse].self)
+    }
+    static func getTicketSales(eventId: UUID) async throws -> SalesStatsResponse {
+        let request = try RequestBuilder.buildRequest(
+            path: "/statistics/\(eventId)/sales-per-day",
+            method: "GET"
+        )
+        
+        return try await APIClient.shared.send(request, responseType: SalesStatsResponse.self)
+    }
+
 
 }

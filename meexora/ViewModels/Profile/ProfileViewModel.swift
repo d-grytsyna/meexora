@@ -11,6 +11,7 @@ final class ProfileViewModel: ObservableObject {
             try await AuthService.logout()
             authManager.logout()
         } catch {
+            authManager.logout()
             self.error = "Logout failed: \(error.localizedDescription)"
         }
         isLoggingOut = false

@@ -4,7 +4,7 @@ struct StripeAccountService {
 
     static func createStripeAccount() async throws -> String {
         let request = try RequestBuilder.buildRequest(
-            path: "/payment/stripe/accounts",
+            path: "/payments/stripe/accounts",
             method: "POST"
         )
 
@@ -13,7 +13,7 @@ struct StripeAccountService {
 
     static func getOnboardingLink() async throws -> URL {
         let request = try RequestBuilder.buildRequest(
-            path: "/payment/stripe/accounts/onboarding-link",
+            path: "/payments/stripe/accounts/onboarding-link",
             method: "GET"
         )
 
@@ -28,7 +28,7 @@ struct StripeAccountService {
 
     static func getStripeAccountStatus() async throws -> StripeAccountStatus {
         let request = try RequestBuilder.buildRequest(
-            path: "/payment/stripe/accounts/status",
+            path: "/payments/stripe/accounts/status",
             method: "GET"
         )
 

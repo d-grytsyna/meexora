@@ -9,4 +9,6 @@ struct EventShortResponse: Identifiable, Decodable {
     let latitude: Double
     let longitude: Double
     let address: String
+    let category: EventCategory
+    let price: Decimal
 }
