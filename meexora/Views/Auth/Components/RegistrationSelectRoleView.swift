@@ -4,7 +4,7 @@ struct RegistrationSelectRoleView: View {
     @ObservedObject var viewModel: RegistrationViewModel
 
     var body: some View {
-        VStack(spacing: StyleGuide.Spacing.large) {
+        VStack(spacing: StyleGuide.Spacing.medium) {
             Text("What brings you to Meexora?")
                            .font(StyleGuide.Fonts.bodyBold)
                            .foregroundColor(StyleGuide.Colors.primaryText)

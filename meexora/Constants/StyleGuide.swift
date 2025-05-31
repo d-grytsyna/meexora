@@ -44,7 +44,7 @@ struct StyleGuide {
     }
     
     // MARK: - Gradients
-    struct Gradients2 {
+    struct Gradients {
         static let background = LinearGradient(
             gradient: Gradient(colors: [Colors.accentGradientStart, Colors.accentGradientEnd]),
             startPoint: .topLeading,
@@ -61,6 +61,14 @@ struct StyleGuide {
         static func accent() -> some ViewModifier {
             AccentButtonStyle()
         }
+    }
+    
+    // MARK: - Progress Button Styles
+    struct ProgressButtons {
+        static func primary() -> some ViewModifier {
+            ProgressPrimaryButton()
+        }
+
     }
     
     
@@ -91,5 +99,14 @@ struct StyleGuide {
         static let x: CGFloat = 0
         static let y: CGFloat = 2
         
+    }
+
+}
+extension View {
+    func standardPagePadding() -> some View {
+        self
+            .padding(.horizontal, StyleGuide.Padding.large)
+            .padding(.top, StyleGuide.Padding.large)
+            .padding(.bottom, StyleGuide.Padding.extraLarge)
     }
 }

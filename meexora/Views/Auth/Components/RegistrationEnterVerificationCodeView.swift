@@ -2,10 +2,9 @@ import SwiftUI
 
 struct RegistrationEnterVerificationCodeView: View {
     @ObservedObject var viewModel: RegistrationViewModel
-    @EnvironmentObject var authManager: AuthManager
-
+    
     var body: some View {
-        VStack(spacing: StyleGuide.Spacing.large) {
+        VStack(spacing: StyleGuide.Spacing.medium) {
             VStack(spacing: StyleGuide.Spacing.small) {
                 Text("Enter your verification code")
                     .font(StyleGuide.Fonts.title)
@@ -18,9 +17,40 @@ struct RegistrationEnterVerificationCodeView: View {
                     .padding(.horizontal)
             }
             
-            CustomTextField(placeholder: "Verification Code", text: $viewModel.verificationCode, isSecure: false)
-                .padding(.horizontal)
+            LimitedTextField(
+                placeholder: "Verification Code",
+                text: $viewModel.verificationCode,
+                limit: 6,
+                isSecure: false,
+                keyboard: .numberPad
+            )
+            if viewModel.isResendAvailable {
+                Button(action: {
+                    Task {
+                        await viewModel.resendCode()
+                    }
+                }) {
+                    if viewModel.isLoadingReset {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: StyleGuide.Colors.accentPurple))
+                    } else {
+                        Text("Resend Code")
+                            .font(StyleGuide.Fonts.bodyBold)
+                            .foregroundColor(StyleGuide.Colors.accentPurple)
+                    }
+                }
+                .disabled(viewModel.isLoadingReset)
+                .font(StyleGuide.Fonts.bodyBold)
+                .foregroundColor(StyleGuide.Colors.accentPurple)
+            } else {
+                Text("You can resend the code in \(viewModel.resendAvailableIn) seconds")
+                    .font(StyleGuide.Fonts.small)
+                    .foregroundColor(StyleGuide.Colors.secondaryText)
+            }
         }
     }
 }
 
+#Preview {
+    RegistrationEnterVerificationCodeView(viewModel: RegistrationViewModel())
+}
