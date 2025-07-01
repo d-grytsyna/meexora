@@ -1,24 +1,19 @@
 import SwiftUI
 import SafariServices
 
+import SwiftUI
+
 struct ManagementView: View {
     @StateObject private var viewModel = ManagementViewModel()
     @EnvironmentObject var deepLinkManager: DeepLinkManager
+    @State private var selectedTab: EventTab = .upcoming
 
     var body: some View {
         ZStack {
             StyleGuide.Colors.secondaryBackground.ignoresSafeArea()
 
             NavigationStack {
-                if viewModel.isLoading {
-                    ProgressView("Loading...")
-                        .foregroundColor(StyleGuide.Colors.secondaryText)
-                } else {
-                    VStack(spacing: StyleGuide.Spacing.large) {
-                        contentSection
-                        statusSection
-                    }
-                    .padding(StyleGuide.Padding.large)
+                content
                     .navigationTitle("My Events")
                     .sheet(item: $viewModel.onboardingLink) { identifiable in
                         SafariView(url: identifiable.url)
@@ -26,7 +21,6 @@ struct ManagementView: View {
                     .refreshable {
                         await viewModel.fetchAllData()
                     }
-                }
             }
         }
         .task {
@@ -40,35 +34,53 @@ struct ManagementView: View {
     }
 
     @ViewBuilder
-    private var contentSection: some View {
-        if let error = viewModel.errorMessage, viewModel.events.isEmpty {
-            Text(error)
-                .foregroundColor(StyleGuide.Colors.errorText)
-                .font(StyleGuide.Fonts.body)
-        } else if viewModel.events.isEmpty {
-            Text("You haven't created any events yet.")
+    private var content: some View {
+        if viewModel.isLoading {
+            ProgressView("Loading...")
                 .foregroundColor(StyleGuide.Colors.secondaryText)
-                .font(StyleGuide.Fonts.body)
         } else {
-            List(viewModel.events) { event in
-                NavigationLink(destination: EventDetailsView(event: event)) {
-                    VStack(alignment: .leading, spacing: StyleGuide.Spacing.small) {
-                        Text(event.title)
-                            .font(StyleGuide.Fonts.bodyBold)
-                            .foregroundColor(StyleGuide.Colors.primaryText)
-                        Text(event.address)
-                            .font(StyleGuide.Fonts.body)
-                            .foregroundColor(StyleGuide.Colors.secondaryText)
-                        Text("Price: \(event.price)€")
-                            .font(StyleGuide.Fonts.small)
-                            .foregroundColor(StyleGuide.Colors.secondaryText)
-                    }
-                    .padding(.vertical, StyleGuide.Padding.small)
-                }
-                .listRowBackground(StyleGuide.Colors.primaryBackground)
+            VStack(spacing: StyleGuide.Spacing.large) {
+                tabPicker
+                eventList
+                statusSection
             }
-            .listStyle(PlainListStyle())
-            .scrollContentBackground(.hidden)
+            .padding(StyleGuide.Padding.large)
+        }
+    }
+
+    private var filteredEvents: [EventManagementResponse] {
+        switch selectedTab {
+        case .upcoming:
+            return viewModel.events.filter { $0.date > Date() }
+        case .history:
+            return viewModel.events.filter { $0.date <= Date() }
+        }
+    }
+
+    private var tabPicker: some View {
+        Picker("Event Tab", selection: $selectedTab) {
+            Text("Upcoming").tag(EventTab.upcoming)
+            Text("History").tag(EventTab.history)
+        }
+        .pickerStyle(.segmented)
+    }
+
+    private var eventList: some View {
+        ScrollView {
+            LazyVStack(spacing: StyleGuide.Spacing.medium) {
+                if filteredEvents.isEmpty {
+                    Text("No events found.")
+                        .foregroundColor(StyleGuide.Colors.secondaryText)
+                        .font(StyleGuide.Fonts.body)
+                        .padding(.top)
+                } else {
+                    ForEach(filteredEvents) { event in
+                        NavigationLink(destination: EventDetailsView(event: event)) {
+                            ManagementEventCardView(event: event)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -81,7 +93,6 @@ struct ManagementView: View {
                         .font(StyleGuide.Fonts.button)
                 }
                 .buttonStyle(.plain)
-
 
                 Text("Stripe account is active")
                     .font(StyleGuide.Fonts.small)
@@ -102,5 +113,46 @@ struct ManagementView: View {
                 }
             }
         }
+    }
+
+    enum EventTab: String, CaseIterable, Hashable {
+        case upcoming
+        case history
+    }
+}
+
+struct ManagementEventCardView: View {
+    let event: EventManagementResponse
+
+    var body: some View {
+        HStack(spacing: StyleGuide.Spacing.medium) {
+            Image(event.category.iconNameLarge)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .foregroundColor(StyleGuide.Colors.accentPurple)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(event.title)
+                    .font(StyleGuide.Fonts.bodyBold)
+                    .foregroundColor(StyleGuide.Colors.primaryText)
+
+                Text(event.address)
+                    .font(StyleGuide.Fonts.small)
+                    .foregroundColor(StyleGuide.Colors.secondaryText)
+
+                Text(event.date.formatted(date: .abbreviated, time: .shortened))
+                    .font(StyleGuide.Fonts.small)
+                    .foregroundColor(StyleGuide.Colors.secondaryText)
+            } .frame(maxWidth: .infinity, alignment: .leading)
+
+
+        
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(StyleGuide.Colors.primaryBackground)
+        .cornerRadius(StyleGuide.Corners.medium)
+        .shadow(color: StyleGuide.Shadows.color.opacity(0.1), radius: 4, x: 0, y: 2)
     }
 }

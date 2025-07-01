@@ -9,7 +9,9 @@ struct CompleteProfileView: View {
     @State private var didAutofill = false
     @State private var isSelecting = false
     @State private var isAutofillFromLocation = false
-
+    init(profile: UserProfileDto? = nil) {
+            _viewModel = StateObject(wrappedValue: CompleteProfileViewModel(profile: profile))
+        }
     var body: some View {
         ZStack {
             StyleGuide.Colors.primaryBackground.ignoresSafeArea()

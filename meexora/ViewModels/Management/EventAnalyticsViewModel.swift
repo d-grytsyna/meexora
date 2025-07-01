@@ -12,6 +12,7 @@ class EventAnalyticsViewModel: ObservableObject {
     }
     
     @Published var salesStatsResponse: SalesStatsResponse?
+    @Published var scanningStats: TicketValidationStats?
     @Published var isLoading: Bool = false
     @Published var error: String?
     
@@ -19,9 +20,12 @@ class EventAnalyticsViewModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
-        async let salesTask: () = fetchSalesData()
-        _ = await (salesTask)
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchSalesData() }
+            group.addTask { await self.fetchScanningStats() }
+        }
     }
+
 
     func fetchSalesData() async {
         isLoading = true
@@ -41,6 +45,21 @@ class EventAnalyticsViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+
+    func fetchScanningStats() async {
+        error = nil
+        print("Fetching stats for event:", eventId)
+
+        do {
+            let scanning = try await TicketService.getValidatedTickets(eventId: eventId)
+            self.scanningStats = scanning
+            print("STATS")
+            print(scanning)
+        } catch {
+            self.error = "Failed to get scanning stats: \(error.localizedDescription)"
+        }
+
     }
 
     func generateFullDailyStats(to eventDate: Date, stats: [DailySale]) -> [DailySale] {

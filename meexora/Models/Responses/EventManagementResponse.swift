@@ -1,17 +1,38 @@
 import Foundation
 
 struct EventManagementResponse: Codable, Identifiable {
-    let id: UUID
-    let creatorId: UUID
-    let title: String
-    let description: String
-    let date: Date
-    let latitude: Double
-    let longitude: Double
-    let address: String
-    let totalTickets: Int
-    let price: Decimal
-    let dynamicPricingEnabled: Bool
-    let minPrice: Decimal
-    let maxPrice: Decimal
+    var id: UUID
+    var creatorId: UUID
+    var title: String
+    var description: String
+    var date: Date
+    var latitude: Double
+    var longitude: Double
+    var address: String
+    var totalTickets: Int
+    var price: Decimal
+    var dynamicPricingEnabled: Bool
+    var minPrice: Decimal
+    var maxPrice: Decimal
+    var category: EventCategory
+}
+extension EventManagementResponse {
+    init() {
+        self.init(
+            id: UUID(),
+            creatorId: UUID(),
+            title: "",
+            description: "",
+            date: Date(),
+            latitude: 0.0,
+            longitude: 0.0,
+            address: "",
+            totalTickets: 0,
+            price: 0.0,
+            dynamicPricingEnabled: false,
+            minPrice: 0.0,
+            maxPrice: 0.0,
+            category: .general
+        )
+    }
 }

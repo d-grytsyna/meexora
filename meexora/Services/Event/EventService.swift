@@ -73,6 +73,31 @@ struct EventService {
         
         return try await APIClient.shared.send(request, responseType: EventResponse.self)
     }
+    
+    static func editEvent(newEvent: EditEventDTO) async throws  -> EventResponse {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+
+        let request = try RequestBuilder.buildRequest(
+            path: "/event/edit",
+            method: "PUT",
+            body: newEvent,
+            encoder: encoder
+        )
+
+        print(newEvent)
+        
+        return try await APIClient.shared.send(request, responseType: EventResponse.self)
+    }
+    
+    static func getEventById(eventId: UUID) async throws -> EditEventDTO {
+        let request = try RequestBuilder.buildRequest(
+            path: "/event/management/\(eventId.uuidString)",
+            method: "GET"
+        )
+        return try await APIClient.shared.send(request, responseType: EditEventDTO.self)
+    }
+
 
 
 }

@@ -7,7 +7,7 @@ class BookingFormViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var submittedBooking: BookingResponse?
-
+    
     enum BookingResult {
         case bookingReserved
         case monitoringReserved
@@ -24,10 +24,20 @@ class BookingFormViewModel: ObservableObject {
         ticketNames.remove(at: index)
     }
 
-    func handleBookingSubmission(for eventId: UUID, isMonitoring: Bool) async -> BookingResult {
+    func handleBookingSubmission(for eventId: UUID, isMonitoring: Bool) async -> BookingResult? {
         isLoading = true
         defer { isLoading = false }
 
+        errorMessage = nil
+
+        let validationResult = CreateBookingValidator.validateTickets(ticketNames)
+
+        if validationResult.isFailure {
+            self.errorMessage = validationResult.errorMessages.first
+            return nil;
+        }
+    
+        
         let ticketRequests = ticketNames.map { TicketRequest(userName: $0) }
         let request = CreateBookingRequest(eventId: eventId, tickets: ticketRequests)
 

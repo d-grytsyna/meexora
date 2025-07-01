@@ -128,7 +128,7 @@ struct CreateEventView: View {
                     }
                 } label: {
                     if viewModel.isLoading {
-                        ProgressView().modifier(StyleGuide.ProgressButtons.primary())
+                        ProgressView()
                     } else {
                         Text("Create Event")
                             .frame(maxWidth: .infinity)

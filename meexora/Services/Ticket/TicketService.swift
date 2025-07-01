@@ -13,6 +13,15 @@ struct TicketService {
         return try await APIClient.shared.send(request, responseType: TicketValidationResponse.self)
     }
 
+    static func getValidatedTickets(eventId: UUID) async throws -> TicketValidationStats {
+        let request = try RequestBuilder.buildRequest(
+            path: "/ticket/verify/\(eventId)",
+            method: "GET",
+        )
+
+    
+        return try await APIClient.shared.send(request, responseType: TicketValidationStats.self)
+    }
 
 
 }

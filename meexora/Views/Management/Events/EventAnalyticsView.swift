@@ -20,7 +20,8 @@ struct EventAnalyticsView: View {
                         Spacer()
                     }
                     Spacer()
-                } else if let stats = viewModel.salesStatsResponse {
+                } else if let stats = viewModel.salesStatsResponse,
+                            let scanningStats = viewModel.scanningStats{
                     
                     Text("Ticket Sales Analytics")
                         .font(StyleGuide.Fonts.title)
@@ -38,6 +39,14 @@ struct EventAnalyticsView: View {
                         HStack {
                             Text("Total Revenue:")
                             Text("\(stats.totalRevenue.formatted()) €")
+                                .font(StyleGuide.Fonts.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(StyleGuide.Colors.accentPurple)
+                        }
+                        
+                        HStack {
+                            Text("Scanned amount:")
+                            Text("\(scanningStats.validated)")
                                 .font(StyleGuide.Fonts.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(StyleGuide.Colors.accentPurple)
