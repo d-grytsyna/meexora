@@ -10,30 +10,36 @@ struct EventUserListView: View {
                 StyleGuide.Gradients.background
                     .ignoresSafeArea()
 
-                VStack(spacing: StyleGuide.Spacing.medium) {
-                    if viewModel.isLocationAvailable {
-                        Picker("Mode", selection: $selectedTab) {
-                            ForEach(EventSearchMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
+                if viewModel.isInitialized {
+                    VStack(spacing: StyleGuide.Spacing.medium) {
+                        if viewModel.isLocationAvailable {
+                            Picker("Mode", selection: $selectedTab) {
+                                ForEach(EventSearchMode.allCases, id: \.self) { mode in
+                                    Text(mode.displayName).tag(mode)
+                                }
                             }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .padding(.horizontal)
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding(.horizontal)
-                    }
 
-                    categoryPicker
-                    selectedCategoryHeader
-                    eventContent
-                        .frame(maxHeight: .infinity)
+                        categoryPicker
+                        selectedCategoryHeader
+                        eventContent
+                            .frame(maxHeight: .infinity)
+                    }
+                    .frame(maxHeight: .infinity)
+                    .standardPagePadding()
+                } else {
+                    ProgressView("Checking location...")
                 }
-                .frame(maxHeight: .infinity)
-                .standardPagePadding()
             }
             .navigationTitle("Available Events")
         }
         .task {
             await viewModel.checkLocationAvailability()
-            await viewModel.resetAndFetch()
+            if viewModel.isInitialized {
+                await viewModel.resetAndFetch()
+            }
         }
         .onChange(of: viewModel.selectedCategory) {
             Task {
@@ -46,6 +52,7 @@ struct EventUserListView: View {
             }
         }
     }
+
 
     private var categoryPicker: some View {
         CustomPicker<EventCategory?>(

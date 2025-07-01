@@ -53,5 +53,13 @@ struct BookingService {
         return try await APIClient.shared.send(request, responseType: SalesStatsResponse.self)
     }
 
+    static func cancelMonitoring(bookingId: UUID) async throws -> Bool {
+        let request = try RequestBuilder.buildRequest(
+            path: "/bookings/watching/\(bookingId)/delete",
+            method: "DELETE"
+        )
+
+        return try await APIClient.shared.send(request, responseType: Bool.self)
+    }
 
 }

@@ -2,8 +2,9 @@ import UIKit
 import AVFoundation
 
 protocol ScannerViewControllerDelegate: AnyObject {
-    func didFind(code: String)
+    func didFind(code: String, completion: @escaping () -> Void)
 }
+
 
 class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     weak var delegate: ScannerViewControllerDelegate?
@@ -48,15 +49,14 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         guard !isProcessingCode,
               let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
               let stringValue = object.stringValue
-        else {
-            return
-        }
+        else { return }
 
         isProcessingCode = true
-        delegate?.didFind(code: stringValue)
+        session.stopRunning()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.isProcessingCode = false
+        delegate?.didFind(code: stringValue) { [weak self] in
+            self?.isProcessingCode = false
+            self?.session.startRunning()
         }
     }
 }

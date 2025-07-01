@@ -11,7 +11,7 @@ final class EventUserListViewModel: ObservableObject {
     @Published var selectedCategory: EventCategory? = nil
     @Published var mode: EventSearchMode = .city
     @Published var isLocationAvailable: Bool = false
-
+    @Published var isInitialized = false
     @Published var currentPage: Int = 0
     private var totalPages: Int = 1
     private let pageSize = 10
@@ -26,8 +26,10 @@ final class EventUserListViewModel: ObservableObject {
         do {
             _ = try await LocationManagerService.shared.getCurrentLocation()
             isLocationAvailable = true
+            isInitialized = true
         } catch {
             isLocationAvailable = false
+            isInitialized = true
         }
     }
 
@@ -39,10 +41,12 @@ final class EventUserListViewModel: ObservableObject {
     }
 
     func resetAndFetch() async {
+        isLoading = true
         events = []
         currentPage = 0
         totalPages = 1
         await fetchPage()
+        isLoading = false
     }
 
     private func fetchPage() async {
@@ -62,6 +66,7 @@ final class EventUserListViewModel: ObservableObject {
 
             let cityName = cityToUse.components(separatedBy: ",").first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
 
+            print(cityName)
             let response: PaginatedResponse<EventShortResponse>
 
             switch mode {

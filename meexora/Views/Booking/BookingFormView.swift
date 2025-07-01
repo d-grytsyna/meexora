@@ -164,6 +164,8 @@ struct BookingFormView: View {
                 case .error(let message):
                     alertMessage = message
                     showAlert = true
+                case .none:
+                    break
                 }
             }
         }) {

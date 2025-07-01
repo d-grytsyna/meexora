@@ -24,7 +24,7 @@ struct MainTabView: View {
                             Text("Management")
                         }
             }
-            ProfileView()
+            ProfileView(authManager: authManager)
                 .tabItem {
                     Image(systemName: "person")
                     Text("Profile")

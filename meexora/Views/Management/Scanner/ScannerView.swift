@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ScannerView: UIViewControllerRepresentable {
     @Binding var scannedCode: String?
-    var onScan: (String) -> Void
+    var onScan: (String, @escaping () -> Void) -> Void
 
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self, onScan: onScan)
@@ -18,16 +18,17 @@ struct ScannerView: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, ScannerViewControllerDelegate {
         let parent: ScannerView
-        let onScan: (String) -> Void
+        let onScan: (String, @escaping () -> Void) -> Void
 
-        init(parent: ScannerView, onScan: @escaping (String) -> Void) {
+        init(parent: ScannerView, onScan: @escaping (String, @escaping () -> Void) -> Void) {
             self.parent = parent
             self.onScan = onScan
         }
 
-        func didFind(code: String) {
+        func didFind(code: String, completion: @escaping () -> Void) {
             parent.scannedCode = code
-            onScan(code)
+            onScan(code, completion)
         }
     }
+
 }

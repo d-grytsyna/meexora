@@ -32,13 +32,15 @@ class BookingListViewModel: ObservableObject {
     func loadBookings() async {
         isLoading = true
         defer { isLoading = false }
-        
+
         do {
             let result = try await BookingService.fetchAllBookings()
             bookings = result
         } catch {
-            errorMessage = "Failed to load bookings"
+            print("Booking fetch error: \(error)")
+            errorMessage = error.localizedDescription 
         }
     }
+
 }
     
